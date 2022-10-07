@@ -1,5 +1,5 @@
 const { products } = require("../models/products.model");
-
+const Product = require("../models/products.model")
 const getAllProducts = (res, req, next) => {
     res.status(200).send(products)
 };
@@ -29,18 +29,16 @@ const deleteProduct = (res, req, next) => {
     }
 };
 
-const createProduct = (res, req, next) => {
-    const newProduct = {
-        id: products.length + 1,
-        name: req.body.name,
-        price: req.body.price,
-        description: req.body.description,
-        ingredients: req.body.ingredients,
-        usage: req.body.usage,
-        goodToKnow: req.body.goodToKnow,
-    }
-    products.push(newProduct)
-    res.status(201).send(newProduct)
+const createProduct = async ( req, res, next) => {
+    const product = req.body;
+    console.log("product", product);
+  try {
+const newProduct = await Product.create(product);
+   await newProduct.save();
+    res.json(newProduct);
+  } catch (error) {
+    console.log(error, "error");
+  }
 };
 
 const updateProduct = (res, req, next) => {
